@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui" >
+
+<f:view>
+    <h:head>
+        <title>#{msg['confirm_order']}</title>
+        <h:outputStylesheet library="css" name="style.css"  />
+    </h:head>
+
+    <h:body styleClass="tableCoffee">
+        <h:form>
+            <h:outputText value="#{msg['cost_delivery']} "/>
+            <h:outputText value="#{orderBean.costWithDelivery}"/>
+            <br/>
+            <h:outputText value="#{msg['cost_without_delivery']} "/>
+            <h:outputText value="#{orderBean.cost}"/>
+
+            <br/>
+
+            <div class="ui-g-12 ui-md-4">
+                <div class="ui-inputgroup">
+                    <span class="ui-inputgroup-addon"></span>
+                    <p:inputText value="#{orderBean.clientName}" placeholder="#{msg['client_name']}"/>
+
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <div class="ui-g-12 ui-md-4">
+                <div class="ui-inputgroup">
+                    <span class="ui-inputgroup-addon"></span>
+                    <p:inputText id="userAdress" value="#{orderBean.adress}" placeholder="#{msg['adress']}" required="true"
+                    validatorMessage="#{msg['adress_not_empty']}">
+                        <f:validateLength minimum="1" maximum="255"/>
+                    </p:inputText>
+                    <p:message for="userAdress" display="text"/>
+                </div>
+            </div>
+
+            <br/>
+            <br/>
+            <br/>
+            <h:commandButton value="#{msg['confirm_order']}" update="userAdress"
+                             action="#{orderBean.confirmOrder(orderBean.adress, orderBean.clientName)}"/>
+            <h:outputText value=" "/>
+
+        </h:form>
+        <br/>
+        <h:form>
+        <h:commandButton value="#{msg['back']}" action="#{orderBean.redirectToIndex}"/>
+        </h:form>
+        <br/>
+        <h:outputText value="#{msg['current_order']}"/>
+        <p:dataTable value="#{orderBean.coffeeInOrder}" var="coffeeEntry">
+            <p:column headerText="#{msg['name']}">
+                <h:outputText value="#{coffeeEntry.key.coffeeName}" />
+            </p:column>
+            <p:column headerText="#{msg['cost']}">
+                <h:outputText value="#{coffeeEntry.key.costForCup}" />
+            </p:column>
+            <p:column headerText="#{msg['quantity']}">
+                <h:outputText value="#{coffeeEntry.value}" />
+            </p:column>
+        </p:dataTable>
+    </h:body>
+    <br/>
+
+    <h:form>
+        <br/>
+        <h:commandButton action="#{language.changeLanguage('en')}"
+                         value="English" image="resources/images/english.png"  />
+        <h:outputText value=" " />
+        <h:commandButton action="#{language.changeLanguage('ru')}"
+                         value="Russian" image="resources/images/rus.png" />
+    </h:form>
+</f:view>
+
+</html>
