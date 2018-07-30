@@ -2,6 +2,7 @@ package javacoff.entity;
 
 
 import javax.persistence.*;
+import javax.persistence.criteria.Order;
 import java.util.Set;
 
 @Entity
@@ -15,17 +16,17 @@ public class Coffee {
 
     private Integer costForCup;
 
-    private boolean isDisabled;
+    private boolean disabled;
 
     @OneToMany(mappedBy = "coffee")
-    private Set<Coffee> coffee;
+    private Set<OrderPosition> orderPosition;
 
-    public Coffee() {}
+    public Set<OrderPosition> getOrderPosition() {
+        return orderPosition;
+    }
 
-    public Coffee(String coffeeName, Integer costForCup, boolean isDisabled) {
-        this.coffeeName = coffeeName;
-        this.costForCup = costForCup;
-        this.isDisabled = isDisabled;
+    public void setOrderPosition(Set<OrderPosition> orderPosition) {
+        this.orderPosition = orderPosition;
     }
 
     public Long getId() {
@@ -53,10 +54,10 @@ public class Coffee {
     }
 
     public boolean isDisabled() {
-        return isDisabled;
+        return disabled;
     }
 
     public void setDisabled(boolean disabled) {
-        isDisabled = disabled;
+        this.disabled = disabled;
     }
 }

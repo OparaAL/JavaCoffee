@@ -2,6 +2,7 @@ package javacoff.DAO.DAOImplementation;
 
 import javacoff.DAO.OrderDAO;
 import javacoff.entity.Order;
+import javacoff.entity.OrderPosition;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +35,21 @@ public class OrderImplementation implements OrderDAO {
     @Transactional
     public List<Order> findAll() {
         return hibernateTemplate.loadAll(Order.class);
+    }
+
+    //OrderPosition
+    @Override
+    public void createOP(OrderPosition orderPosition) {
+        hibernateTemplate.save(orderPosition);
+    }
+
+    @Override
+    public List<OrderPosition> findAllOP() {
+        return hibernateTemplate.loadAll(OrderPosition.class);
+    }
+
+    @Override
+    public OrderPosition findByIdOP(Long id) {
+        return hibernateTemplate.get(OrderPosition.class, id);
     }
 }

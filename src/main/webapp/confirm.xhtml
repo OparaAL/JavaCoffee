@@ -25,7 +25,7 @@
 
             <div class="ui-g-12 ui-md-4">
                 <div class="ui-inputgroup">
-                    <span class="ui-inputgroup-addon"></span>
+                    <span class="ui-inputgroup-addon"><i class="fa fa-user"></i></span>
                     <p:inputText value="#{orderBean.clientName}" placeholder="#{msg['client_name']}"/>
 
                 </div>
@@ -35,7 +35,7 @@
             <br/>
             <div class="ui-g-12 ui-md-4">
                 <div class="ui-inputgroup">
-                    <span class="ui-inputgroup-addon"></span>
+                    <span class="ui-inputgroup-addon"><i class="fa fa-home"></i></span>
                     <p:inputText id="userAdress" value="#{orderBean.adress}" placeholder="#{msg['adress']}" required="true"
                     validatorMessage="#{msg['adress_not_empty']}">
                         <f:validateLength minimum="1" maximum="255"/>
@@ -51,10 +51,14 @@
                              action="#{orderBean.confirmOrder(orderBean.adress, orderBean.clientName)}"/>
             <h:outputText value=" "/>
 
+
         </h:form>
         <br/>
         <h:form>
         <h:commandButton value="#{msg['back']}" action="#{orderBean.redirectToIndex}"/>
+        <h:outputText value=" "/>
+        <h:commandButton value="#{msg['orders']}" action="#{orderBean.redirectToOrders}"/>
+        <h:outputText value=" "/>
         </h:form>
         <br/>
         <h:outputText value="#{msg['current_order']}"/>
@@ -72,14 +76,7 @@
     </h:body>
     <br/>
 
-    <h:form>
-        <br/>
-        <h:commandButton action="#{language.changeLanguage('en')}"
-                         value="English" image="resources/images/english.png"  />
-        <h:outputText value=" " />
-        <h:commandButton action="#{language.changeLanguage('ru')}"
-                         value="Russian" image="resources/images/rus.png" />
-    </h:form>
+    <ui:include src="resources/template/lang.xhtml"/>
 </f:view>
 
 </html>

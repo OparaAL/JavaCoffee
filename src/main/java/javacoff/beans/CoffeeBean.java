@@ -33,7 +33,7 @@ public class CoffeeBean extends SpringBeanAutowiringSupport {
         return coffeeDAO.findById(id);
     }
 
-
+    public List<Coffee> getNotDis(){return coffeeDAO.findNotDis();}
 
 
 }

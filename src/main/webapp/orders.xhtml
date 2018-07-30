@@ -21,7 +21,7 @@
                     <h:outputText value="#{order.clientName}"/>
                 </p:column>
                 <p:column headerText="#{msg['adress']}">
-                    <h:outputText value="#{order.adress} TGR"/>
+                    <h:outputText value="#{order.adress}"/>
                 </p:column>
                 <p:column headerText="#{msg['cost']}">
                 <h:outputText value="#{order.cost} TGR"/>
@@ -32,15 +32,11 @@
             </p:dataTable>
             <br/>
             <h:commandButton value="#{msg['order']}" action="#{orderBean.redirectToIndex}"/>
+            <h:outputText value=" "/>
+            <h:commandButton value="#{msg['current_order']}" action="#{orderBean.redirectToCurrentOrder}"/>
+            <h:outputText value=" "/>
         </h:form>
-        <h:form>
-            <br/>
-            <h:commandButton action="#{language.changeLanguage('en')}"
-                             value="English" image="resources/images/english.png"  />
-            <h:outputText value=" " />
-            <h:commandButton action="#{language.changeLanguage('ru')}"
-                             value="Russian" image="resources/images/rus.png" />
-        </h:form>
+        <ui:include src="resources/template/lang.xhtml"/>
     </h:body>
 </f:view>
 

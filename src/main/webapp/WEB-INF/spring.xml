@@ -22,43 +22,19 @@
         <property name="password" value="1" />
     </bean>
 
-    <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="packagesToScan" >
-            <list>
-                <value>javacoff.entity</value>
-            </list>
-        </property>
-
-        <property name="dataSource" ref="dataSource"></property>
-
-        <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
-        <property name="persistenceUnitName" value="dev" />
-
-        <property name="jpaProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.use_sql_comments">false</prop>
-                <prop key="hibernate.jdbc.wrap_result_sets">false</prop>
-            </props>
-        </property>
-    </bean>
-
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
         <property name="showSql" value="true"/>
         <property name="generateDdl" value="true"/>
         <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect"/>
     </bean>
 
-    <bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="emf" />
+    <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="mySessionFactory" />
     </bean>
 
     <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true" />
 
-    <bean id="SessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <bean id="mySessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="annotatedClasses">
             <list>
@@ -77,24 +53,11 @@
     </bean>
 
     <bean id="coffeeDAOImpl" class="javacoff.DAO.DAOImplementation.CoffeeImplementation">
-        <property name="SessionFactory" ref="SessionFactory"/>
+        <property name="SessionFactory" ref="mySessionFactory"/>
     </bean>
 
     <bean id="orderDAOImpl" class="javacoff.DAO.DAOImplementation.OrderImplementation">
-        <property name="SessionFactory" ref="SessionFactory"/>
+        <property name="SessionFactory" ref="mySessionFactory"/>
     </bean>
-
-    <bean id="orderPositionDAOImpl" class="javacoff.DAO.DAOImplementation.OrderPositionImplementation">
-        <property name="SessionFactory" ref="SessionFactory"/>
-    </bean>
-
-    <bean id = "order" class = "javacoff.entity.Order"></bean>
-
-    <bean id = "coffee" class = "javacoff.entity.Coffee"></bean>
-
-    <bean id = "orderPosition" class = "javacoff.entity.OrderPosition"></bean>
-
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
-
 
 </beans>

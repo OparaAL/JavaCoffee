@@ -12,4 +12,6 @@ public interface CoffeeDAO {
 
     public void create(Coffee coffee);
 
+    public List<Coffee> findNotDis();
+
 }

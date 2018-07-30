@@ -3,7 +3,6 @@ package javacoff.beans;
 
 import javacoff.DAO.CoffeeDAO;
 import javacoff.DAO.OrderDAO;
-import javacoff.DAO.OrderPositionDAO;
 import javacoff.entity.Coffee;
 import javacoff.entity.Order;
 import javacoff.entity.OrderPosition;
@@ -14,11 +13,9 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 @ManagedBean
 @SessionScoped
@@ -30,12 +27,6 @@ public class OrderBean extends SpringBeanAutowiringSupport {
     @Autowired
     private OrderDAO orderDAO;
 
-    @Autowired
-    private OrderPositionDAO orderPositionDAO;
-
-    @Autowired
-    private Order order;
-
     @Value("${order.freeCup}")
     private Integer freeCup;
 
@@ -45,12 +36,13 @@ public class OrderBean extends SpringBeanAutowiringSupport {
     @Value("${order.costOfDelivery}")
     private Double costOfDelivery;
 
+    private Logger logger = Logger.getLogger(OrderBean.class.getName());
+
     private Map<Long, Integer> selectedCoffee = new HashMap<>();
     private Map<Coffee, Integer> coffeeToOrder = new HashMap<>();
     private Map<Coffee, Integer> coffeeToOrderTemp = new HashMap<>();
 
 
-    private String theProperty;
     private Double cost;
     private Double costWithDelivery;
     private String adress;
@@ -68,14 +60,6 @@ public class OrderBean extends SpringBeanAutowiringSupport {
 
     public List<Order> getAllOrders(){
         return orderDAO.findAll();
-    }
-
-    public String getTheProperty() {
-        return theProperty;
-    }
-
-    public void setTheProperty(String theProperty) {
-        this.theProperty = theProperty;
     }
 
     public Integer getFreeCup() {
@@ -116,14 +100,6 @@ public class OrderBean extends SpringBeanAutowiringSupport {
 
     public void setSelectedItems(Map<Long, Integer> selectedItems) {
         this.selectedCoffee = selectedItems;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public Double getCost() {
@@ -173,9 +149,8 @@ public class OrderBean extends SpringBeanAutowiringSupport {
         if(numOfCups == 0){
             selectedCoffee.remove(id);
         }
-        System.out.println(id + " " +numOfCups);
-        System.out.println(selectedCoffee);
-        System.out.println("freeCup:" + freeCup +" costOfDelivery: " + costOfDelivery + " freDelivery" + freeDelivery);
+        logger.info("id: " + id.toString() + "| " + "numOfCups: " + numOfCups.toString());
+        logger.info(selectedCoffee.toString());
 
         }
 
@@ -192,27 +167,17 @@ public class OrderBean extends SpringBeanAutowiringSupport {
                 coffee = coffeeDAO.findById(entry.getKey());
                 coffeeToOrder.put(coffee, entry.getValue());
                 int tmp = entry.getValue()/freeCup;
-                System.out.println("Coffee: " + coffee.getCoffeeName() + "| Quantity " + entry.getValue()+"| tmp: " + tmp
+                logger.info("Coffee: " + coffee.getCoffeeName() + "| Quantity " + entry.getValue()+"| tmp: " + tmp
                 +"quantity%freeCup = " + entry.getValue()%freeCup);
-                if(entry.getValue() < freeCup){
-                    cost += coffee.getCostForCup() * entry.getValue();
-                }
-                else if(entry.getValue()>=freeCup){
 
-                    cost += coffee.getCostForCup() * ((entry.getValue()-tmp));
+                cost += coffee.getCostForCup() * ((entry.getValue()-tmp));
 
-                }
             }
 
             System.out.println(cost.equals(freeDelivery));
-        if(cost > freeDelivery || cost.equals(freeDelivery)){
-            costWithDelivery = cost;
-            System.out.println("cost=" + cost);
-        }
-        else if( cost < freeDelivery && cost!=0){
-            costWithDelivery = cost + costOfDelivery;
-        }
-        else costWithDelivery = 0.0;
+
+            costWithDelivery = (cost > freeDelivery || cost.equals(freeDelivery)) ? cost :
+                    ( cost < freeDelivery && cost!=0) ? cost + costOfDelivery : 0.0;
 
 
 
@@ -226,18 +191,12 @@ public class OrderBean extends SpringBeanAutowiringSupport {
         }
 
         public void confirmOrder(String adress, String clientName){
-            Order order = new Order();
-            OrderPosition orderPosition = new OrderPosition();
-            order.setAdress(adress);
-            order.setClientName(clientName);
-            order.setCost(costWithDelivery);
-            order.setDate(new Date());
+            Order order = new Order(adress,clientName,costWithDelivery, new Date());
+            OrderPosition orderPosition;
             orderDAO.create(order);
             for(Map.Entry<Coffee, Integer> entry : coffeeToOrder.entrySet()) {
-                orderPosition.setCoffee(entry.getKey());
-                orderPosition.setOrder(order);
-                orderPosition.setQuantity(entry.getValue());
-                orderPositionDAO.create(orderPosition);
+                orderPosition = new OrderPosition(entry.getKey(), order, entry.getValue());
+                orderDAO.createOP(orderPosition);
             }
             coffeeToOrder.clear();
 
@@ -258,6 +217,22 @@ public class OrderBean extends SpringBeanAutowiringSupport {
     public void redirectToIndex(){
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("/index.xhtml");
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void redirectToOrders(){
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/orders.xhtml");
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void redirectToCurrentOrder(){
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/confirm.xhtml");
         } catch(IOException e){
             e.printStackTrace();
         }

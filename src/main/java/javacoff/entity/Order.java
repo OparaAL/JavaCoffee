@@ -23,7 +23,7 @@ public class Order {
     private Date date;
 
     @OneToMany(mappedBy = "order")
-    private Set<Order> order;
+    private Set<OrderPosition> orderPosition;
 
     public Order(){}
 
@@ -32,6 +32,14 @@ public class Order {
         this.adress = adress;
         this.cost = cost;
         this.date = date;
+    }
+
+    public Set<OrderPosition> getOrderPosition() {
+        return orderPosition;
+    }
+
+    public void setOrderPosition(Set<OrderPosition> orderPosition) {
+        this.orderPosition = orderPosition;
     }
 
     public Long getId() {

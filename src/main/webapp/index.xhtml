@@ -15,7 +15,7 @@
 
     <h:body>
         <h:form>
-            <p:dataTable value="#{coffeeBean.allCoffee}" var="coffee">
+            <p:dataTable value="#{coffeeBean.notDis}" var="coffee">
                 <p:column headerText="#{msg['name']}">
                     <h:outputText value="#{coffee.coffeeName}"/>
                 </p:column>
@@ -33,6 +33,12 @@
             </p:dataTable>
             <br/>
             <h:commandButton value="#{msg['order']}" action="#{orderBean.toOrder}"  update="inputCups"/>
+            <h:outputText value=" "/>
+            <h:commandButton value="#{msg['current_order']}" action="#{orderBean.redirectToCurrentOrder}"/>
+            <h:outputText value=" "/>
+            <h:commandButton value="#{msg['orders']}" action="#{orderBean.redirectToOrders}"/>
+
+
         </h:form>
         <br/>
         <h:outputText value="#{msg['delivery_cost']}"/>
@@ -42,14 +48,9 @@
         <br/>
         <br/>
         <h:outputText value="*#{msg['freeCup']}"/>
-        <h:form>
-            <br/>
-            <h:commandButton action="#{language.changeLanguage('en')}"
-                             value="English" image="resources/images/english.png"  />
-            <h:outputText value=" " />
-            <h:commandButton action="#{language.changeLanguage('ru')}"
-                             value="Russian" image="resources/images/rus.png" />
-        </h:form>
+        <br/>
+
+        <ui:include src="resources/template/lang.xhtml"/>
     </h:body>
 </f:view>
 
