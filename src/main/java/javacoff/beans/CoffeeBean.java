@@ -3,7 +3,9 @@ package javacoff.beans;
 
 import javacoff.DAO.CoffeeDAO;
 import javacoff.entity.Coffee;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.faces.bean.ManagedBean;

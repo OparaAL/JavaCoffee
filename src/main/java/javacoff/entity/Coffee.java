@@ -18,6 +18,8 @@ public class Coffee {
 
     private boolean disabled;
 
+    private Integer inputValue;
+
     @OneToMany(mappedBy = "coffee")
     private Set<OrderPosition> orderPosition;
 
@@ -27,6 +29,14 @@ public class Coffee {
 
     public void setOrderPosition(Set<OrderPosition> orderPosition) {
         this.orderPosition = orderPosition;
+    }
+
+    public Integer getInputValue() {
+        return inputValue;
+    }
+
+    public void setInputValue(Integer inputValue) {
+        this.inputValue = inputValue;
     }
 
     public Long getId() {
@@ -60,4 +70,5 @@ public class Coffee {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
     }
+
 }

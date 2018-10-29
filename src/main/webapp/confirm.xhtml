@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:p="http://primefaces.org/ui" >
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
 <f:view>
     <h:head>
@@ -26,7 +26,8 @@
             <div class="ui-g-12 ui-md-4">
                 <div class="ui-inputgroup">
                     <span class="ui-inputgroup-addon"><i class="fa fa-user"></i></span>
-                    <p:inputText value="#{orderBean.clientName}" placeholder="#{msg['client_name']}"/>
+                    <p:inputText value="#{orderBean.clientName}" placeholder="#{msg['client_name']}" required="true"
+                                 validatorMessage="#{msg['client_name']}"/>
 
                 </div>
             </div>
@@ -36,19 +37,19 @@
             <div class="ui-g-12 ui-md-4">
                 <div class="ui-inputgroup">
                     <span class="ui-inputgroup-addon"><i class="fa fa-home"></i></span>
-                    <p:inputText id="userAdress" value="#{orderBean.adress}" placeholder="#{msg['adress']}" required="true"
-                    validatorMessage="#{msg['adress_not_empty']}">
+                    <p:inputText id="userAddress" value="#{orderBean.address}" placeholder="#{msg['address']}" required="true"
+                                 validatorMessage="#{msg['address_not_empty']}">
                         <f:validateLength minimum="1" maximum="255"/>
                     </p:inputText>
-                    <p:message for="userAdress" display="text"/>
+                    <p:message for="userAddress" display="text"/>
                 </div>
             </div>
 
             <br/>
             <br/>
             <br/>
-            <h:commandButton value="#{msg['confirm_order']}" update="userAdress"
-                             action="#{orderBean.confirmOrder(orderBean.adress, orderBean.clientName)}"/>
+            <h:commandButton rendered="#{orderBean.showConfirm}" value="#{msg['confirm_order']}" update="userAddress"
+                             action="#{orderBean.confirmOrder(orderBean.address, orderBean.clientName)}"/>
             <h:outputText value=" "/>
 
 

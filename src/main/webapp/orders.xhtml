@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:p="http://primefaces.org/ui" >
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
 <f:view>
     <h:head>
@@ -20,8 +20,8 @@
                 <p:column headerText="#{msg['client_name']}">
                     <h:outputText value="#{order.clientName}"/>
                 </p:column>
-                <p:column headerText="#{msg['adress']}">
-                    <h:outputText value="#{order.adress}"/>
+                <p:column headerText="#{msg['address']}">
+                    <h:outputText value="#{order.address}"/>
                 </p:column>
                 <p:column headerText="#{msg['cost']}">
                 <h:outputText value="#{order.cost} TGR"/>
@@ -33,7 +33,6 @@
             <br/>
             <h:commandButton value="#{msg['order']}" action="#{orderBean.redirectToIndex}"/>
             <h:outputText value=" "/>
-            <h:commandButton value="#{msg['current_order']}" action="#{orderBean.redirectToCurrentOrder}"/>
             <h:outputText value=" "/>
         </h:form>
         <ui:include src="resources/template/lang.xhtml"/>

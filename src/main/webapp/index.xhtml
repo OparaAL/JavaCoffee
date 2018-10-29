@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:p="http://primefaces.org/ui" >
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
 <f:view>
     <h:head>
@@ -23,23 +23,27 @@
                     <h:outputText value="#{coffee.costForCup} TGR"/>
                 </p:column>
                 <p:column headerText="#{msg['quantity']}" >
-                    <p:inputText id="inputCups" value="#{orderBean.quantityOfCups}" validatorMessage="#{msg['cups_not_empty']}">
-                        <p:ajax event="keyup" listener="#{orderBean.addCoffee(coffee.id, orderBean.quantityOfCups)}"/>
-                        <f:validateLongRange minimum="1" maximum="15"/>
+                    <p:inputText id="inputCups" value="#{coffee.inputValue}" validatorMessage="#{msg['cups_not_empty']}">
+                        <!--<p:ajax event="keyup" listener="#{orderBean.addCoffee(coffee.id, orderBean.quantityOfCups)}"/>-->
+                        <f:validateLongRange minimum="0" maximum="15"/>
                     </p:inputText>
                     <p:message for="inputCups" display="text"/>
                 </p:column>
 
             </p:dataTable>
             <br/>
-            <h:commandButton value="#{msg['order']}" action="#{orderBean.toOrder}"  update="inputCups"/>
+            <h:commandButton value="#{msg['order']}" action="#{orderBean.calculate}" update="inputCups"/>
             <h:outputText value=" "/>
-            <h:commandButton value="#{msg['current_order']}" action="#{orderBean.redirectToCurrentOrder}"/>
             <h:outputText value=" "/>
             <h:commandButton value="#{msg['orders']}" action="#{orderBean.redirectToOrders}"/>
 
 
+
+
         </h:form>
+
+
+
         <br/>
         <h:outputText value="#{msg['delivery_cost']}"/>
         <br/>

@@ -11,14 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class OrderBean extends SpringBeanAutowiringSupport {
 
     @Autowired
@@ -43,11 +42,16 @@ public class OrderBean extends SpringBeanAutowiringSupport {
     private Map<Coffee, Integer> coffeeToOrderTemp = new HashMap<>();
 
 
+    private List<Coffee> coffees = coffeeDAO.findNotDis();
+    private Map<Coffee, Long> quantities = new HashMap<>();;
+
     private Double cost;
     private Double costWithDelivery;
-    private String adress;
+    private String address;
     private String clientName;
+    private boolean showConfirm;
 
+    //@NotNull
     private Integer quantityOfCups;
 
     public Map<Coffee, Integer> getCoffeeToOrderTemp() {
@@ -110,12 +114,12 @@ public class OrderBean extends SpringBeanAutowiringSupport {
         this.cost = cost;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getClientName() {
@@ -142,6 +146,48 @@ public class OrderBean extends SpringBeanAutowiringSupport {
         this.costWithDelivery = costWithDelivery;
     }
 
+    public boolean isShowConfirm() {
+        return showConfirm;
+    }
+
+    public void setShowConfirm(boolean showConfirm) {
+        this.showConfirm = showConfirm;
+    }
+
+    public List<Coffee> getCoffees() {
+        return coffees;
+    }
+
+    public void setCoffees(List<Coffee> coffees) {
+        this.coffees = coffees;
+    }
+
+    public Map<Coffee, Long> getQuantities() {
+        return quantities;
+    }
+
+    public void setQuantities(Map<Coffee, Long> quantities) {
+        this.quantities = quantities;
+    }
+
+    public void submit() {
+        for (Coffee coffee : coffees) {
+            Long quantity = quantities.get(coffee);
+            System.out.println("Quantity: " + quantity);
+        }
+    }
+
+    public void calculate() {
+
+        for (Coffee coffee : coffees) {
+            Integer inputvalue = coffee.getInputValue();
+            System.out.println(inputvalue);
+        }
+    }
+
+
+
+
     public void addCoffee(Long id, Integer numOfCups){
         if(numOfCups > 0){
             selectedCoffee.put(id, numOfCups);
@@ -154,7 +200,7 @@ public class OrderBean extends SpringBeanAutowiringSupport {
 
         }
 
-        public void toOrder(){
+        public String toOrder(){
 
         cost = 0.0;
         costWithDelivery = 0.0;
@@ -166,7 +212,7 @@ public class OrderBean extends SpringBeanAutowiringSupport {
             for(Map.Entry<Long, Integer> entry : selectedCoffee.entrySet()){
                 coffee = coffeeDAO.findById(entry.getKey());
                 coffeeToOrder.put(coffee, entry.getValue());
-                int tmp = entry.getValue()/freeCup;
+                int tmp = entry.getValue()/freeCup;// переменная необходима для расчета количества чашек для скидки
                 logger.info("Coffee: " + coffee.getCoffeeName() + "| Quantity " + entry.getValue()+"| tmp: " + tmp
                 +"quantity%freeCup = " + entry.getValue()%freeCup);
 
@@ -174,7 +220,7 @@ public class OrderBean extends SpringBeanAutowiringSupport {
 
             }
 
-            System.out.println(cost.equals(freeDelivery));
+            logger.info("Cost equals freeDelivery : " + cost.equals(freeDelivery));
 
             costWithDelivery = (cost > freeDelivery || cost.equals(freeDelivery)) ? cost :
                     ( cost < freeDelivery && cost!=0) ? cost + costOfDelivery : 0.0;
@@ -182,16 +228,16 @@ public class OrderBean extends SpringBeanAutowiringSupport {
 
 
             selectedCoffee.clear();
+            if(cost > 0) showConfirm = true;
 
-            try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/confirm.xhtml");
-            } catch(IOException e){
-                e.printStackTrace();
-            }
+            return "/confirm.xhtml?faces-redirect=true&";
         }
 
-        public void confirmOrder(String adress, String clientName){
-            Order order = new Order(adress,clientName,costWithDelivery, new Date());
+        public String confirmOrder(String address, String clientName){
+            Order order = new Order(address,
+                    clientName,
+                    costWithDelivery,
+                    new Date());
             OrderPosition orderPosition;
             orderDAO.create(order);
             for(Map.Entry<Coffee, Integer> entry : coffeeToOrder.entrySet()) {
@@ -199,12 +245,14 @@ public class OrderBean extends SpringBeanAutowiringSupport {
                 orderDAO.createOP(orderPosition);
             }
             coffeeToOrder.clear();
+            cost = 0.0;
+            costOfDelivery = 0.0;
+            costWithDelivery = 0.0;
+            showConfirm = false;
 
-            try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/orders.xhtml");
-            } catch(IOException e){
-                e.printStackTrace();
-            }
+            return "/orders.xhtml?faces-redirect=true&";
+
+
         }
 
     public List<Map.Entry<Coffee, Integer>> getCoffeeInOrder() {
@@ -214,28 +262,17 @@ public class OrderBean extends SpringBeanAutowiringSupport {
         return new ArrayList<Map.Entry<Coffee, Integer>>(productSet);
     }
 
-    public void redirectToIndex(){
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/index.xhtml");
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+    public String redirectToIndex(){
+        return "/index.xhtml?faces-redirect=true&";
     }
 
-    public void redirectToOrders(){
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/orders.xhtml");
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+    public String redirectToOrders(){
+        return "/orders.xhtml?faces-redirect=true&";
     }
 
-    public void redirectToCurrentOrder(){
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/confirm.xhtml");
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+    public String redirectToCurrentOrder(){
+        return "/confirm.xhtml?faces-redirect=true&";
+
     }
 
 }

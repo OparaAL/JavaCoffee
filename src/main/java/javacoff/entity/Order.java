@@ -15,11 +15,11 @@ public class Order {
 
     private String clientName;
 
-    private String adress;
+    private String address;
 
     private Double cost;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     @OneToMany(mappedBy = "order")
@@ -27,9 +27,9 @@ public class Order {
 
     public Order(){}
 
-    public Order(String clientName, String adress, Double cost, Date date) {
+    public Order(String clientName, String address, Double cost, Date date) {
         this.clientName = clientName;
-        this.adress = adress;
+        this.address = address;
         this.cost = cost;
         this.date = date;
     }
@@ -58,12 +58,12 @@ public class Order {
         this.clientName = clientName;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Double getCost() {
