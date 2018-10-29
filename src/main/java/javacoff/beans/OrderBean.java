@@ -11,13 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import java.util.*;
 import java.util.logging.Logger;
 
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class OrderBean extends SpringBeanAutowiringSupport {
 
     @Autowired
